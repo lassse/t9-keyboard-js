@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>T9 Keyboard</title>
+    <style>
+	    body {
+	    	background: #ddd;
+			font-family: monaco, monospace, courier;
+	    }
+
+	    h1 {
+	    	border-bottom: 2px solid #000;
+	    	display:  inline
+	    }
+
+    	#letter {    
+    		font-size: 20px;
+    		height: 30px;
+    		color: #ff0000;
+    	}
+    	#input {
+    		color: #000000;
+    		font-size: 60px;
+    		padding: 10px;
+    	}    	
+    </style>
+</head>
+<body>
+
+<div id="info">
+	<h1>T9 Keyboard</h1>
+	<p>
+		Use the numeric keys to type your message.
+	</p>
+</div>
+
+<div id="letter"></div>
+<div id="input"></div>
+<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+<script>
+
+
+var letter = document.getElementById("letter");
+var input = document.getElementById("input");
+
+var timer;
+var pause = 0;
+var difTolerance = 700;
+var startTime;
+var endTime;
+var first = true;
+var activeKey;
+var current;
+var lastKey;
+var k48 = [" "];
+var k49 = [""];
+var k50 = ["a","b","c"];
+var k51 = ["d","e","f"];
+var k52 = ["g","h","i"];
+var k53 = ["j","k","l"];
+var k54 = ["m","n","o"];
+var k55 = ["p","q","r","s"];
+var k56 = ["t","u","v"];
+var k57 = ["w","x","y","z"];
+
+function setWord(){
+	input.innerHTML = input.innerHTML + activeKey[current];
+	current = 0;
+	letter.innerHTML = "";
+}
+
+function checkPause(){
+	endTime = new Date().getTime();
+	if (endTime - startTime >= difTolerance) {
+		clearInterval(timer);		
+		setWord();
+	}
+}
+
+function handleKeyUp(e){
+	console.log("HEJ", e);
+	if (e.keyCode >= 48 && e.keyCode <= 57) {
+		if (e.keyCode != lastKey) {
+			current = 0;
+			first = true;
+		}
+		
+		lastKey = e.keyCode;
+		clearInterval(timer);
+		startTime = new Date().getTime();
+		pause = 0;
+		timer = setInterval(checkPause, 5);
+	}else{
+		return false;
+	}
+	
+	if (e.keyCode === 48) {
+		// 0
+		// space	
+		activeKey = k48;	
+	} else if (e.keyCode === 49) {
+		// 1
+	} else if (e.keyCode === 50) {
+		// 2
+		// a b c
+		activeKey = k50;
+	} else if (e.keyCode === 51) {
+		// 3
+		// d e f
+		activeKey = k51;
+	} else if (e.keyCode === 52) {
+		// 4
+		// g h i
+		activeKey = k52;
+	} else if (e.keyCode === 53) {
+		// 5
+		// j k l
+		activeKey = k53;
+	} else if (e.keyCode === 54) {
+		// 6
+		// m n o
+		activeKey = k54;
+	} else if (e.keyCode === 55) {
+		// 7
+		// p q r s
+		activeKey = k55;
+	} else if (e.keyCode === 56) {
+		// 8
+		// t u v
+		activeKey = k56;	
+	} else if (e.keyCode === 57) {
+		// 9
+		// w x y z
+		activeKey = k57;
+	}
+
+
+	if (current < activeKey.length-1) {
+		current++;		
+	}else{
+		current = 0;
+	}
+
+	if (first) {
+		current = 0;
+		first = false;
+	}
+
+	letter.innerHTML = activeKey[current];
+}
+function init() {
+	document.onkeyup = handleKeyUp;
+}
+
+document.body.onload = init;
+</script>
+</body>
+</html>
